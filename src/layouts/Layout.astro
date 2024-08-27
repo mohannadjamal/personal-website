@@ -1,0 +1,134 @@
+---
+import { Image } from "astro:assets";
+import { getStaticPaths } from "../../astro.config.mjs";
+
+import brand from "../images/mj.png";
+
+const parentPages = await getStaticPaths();
+
+interface Props {
+  title: string;
+}
+
+const { title } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="description" content="Astro description" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    <title>Mohannad Jamal | {title}</title>
+  </head>
+  <body class="container mx-auto">
+    <nav class="flex flex-row justify-between py-8">
+      <a class="brand" href="/">
+        <Image src={brand} alt="Mohannad Jamal" width={30} />
+      </a>
+      <ul class="navigation list-none flex flex-row">
+        {
+          parentPages.map((page: { slug: String; title: String }, index: number, arr: any) => (
+            <li class="nav-link capitalize mx-1">
+              <a href={`/${page.slug}`}>{page.title + (index != arr.length-1 ? ',' : '')}</a>
+            </li>
+          ))
+        }
+      </ul>
+      <a class="email" href="mailto:jamalmohannad@gmail.com">jamalmohannad@gmail.com</a>
+    </nav>
+    <slot />
+  </body>
+</html>
+<style is:global>
+  @font-face {
+    font-family: "SuisseIntlBold";
+    src: url("/fonts/Suisse_Intl_Bold.ttf") format("ttf");
+    font-weight: bold;
+    font-style: normal;
+  }
+
+  @font-face {
+    font-family: "Inter";
+    src: url("/fonts/Inter-VariableFont_opsz,wght.ttf") format("ttf");
+    font-weight: normal;
+    font-style: normal;
+  }
+  :root {
+    font-family: "Inter", sans-serif;
+    font-weight: 600;
+    letter-spacing: -0.5px;
+    line-height: 24px;
+    font-size: 18px;
+  }
+  .nav-link {
+    text-decoration: none;
+    color: black;
+    position: relative;
+    display: inline-block;
+  }
+  .nav-link::after {
+    content: "";
+    position: absolute;
+    left: 0;
+	bottom: -5px;
+    height: 2px;
+    width: 100%;
+    background-color: black;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s ease;
+  }
+  /* Animating the underline on hover */
+  .nav-link:hover::after {
+    transform: scaleX(1);
+  }
+
+
+  /* Base styles for the link */
+.email {
+  text-decoration: none;
+  color: black;
+  position: relative;
+  display: inline-block;
+}
+
+/* Initial underline */
+.email::before,
+.email::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -5px;
+  height: 2px;
+  width: 100%;
+  background-color: black;
+}
+
+/* Disappearing underline */
+.email::before {
+  transform: scaleX(1);
+  transform-origin: left;
+  transition: transform 0.3s ease 0s;
+}
+
+/* Appearing underline */
+.email::after {
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.3s ease 0.3s;
+}
+
+/* Hover effect */
+.email:hover::before {
+  transform: scaleX(0);
+  transform-origin: right;
+}
+
+.email:hover::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+</style>
